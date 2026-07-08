@@ -1,0 +1,66 @@
+name: AOTO Chinese Website Crawl
+
+on:
+  workflow_dispatch:
+    inputs:
+      seed_urls:
+        description: 'Comma-separated seed URLs'
+        required: false
+        default: 'https://www.aoto.com/,https://www.aoto.com/cn/,https://www.aoto.com/zh/,https://cn.aoto.com/,https://www.aoto.com.cn/'
+      max_pages:
+        description: '0 = unlimited, suggest 50 for test first'
+        required: false
+        default: '0'
+      download_images:
+        description: '1 download images, 0 skip'
+        required: false
+        default: '1'
+      download_docs:
+        description: '1 download PDF/PPT/ZIP docs, 0 skip'
+        required: false
+        default: '1'
+      download_videos:
+        description: '1 download videos, 0 skip'
+        required: false
+        default: '0'
+      preserve_url_structure:
+        description: '1 keep files by official website URL tree'
+        required: false
+        default: '1'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install crawler dependencies
+        run: pip install -r requirements.txt
+      - name: Run crawler
+        env:
+          AOTO_SEEDS: ${{ inputs.seed_urls }}
+          AOTO_MAX_PAGES: ${{ inputs.max_pages }}
+          AOTO_DOWNLOAD_IMAGES: ${{ inputs.download_images }}
+          AOTO_DOWNLOAD_DOCS: ${{ inputs.download_docs }}
+          AOTO_DOWNLOAD_VIDEOS: ${{ inputs.download_videos }}
+          AOTO_PRESERVE_URL_STRUCTURE: ${{ inputs.preserve_url_structure }}
+          AOTO_CRAWL_OUT: aoto-official-cn-full
+        run: |
+          python -m scrapy crawl aoto_cn_full \
+            -a out="$AOTO_CRAWL_OUT" \
+            -a max_pages="$AOTO_MAX_PAGES" \
+            -a download_images="$AOTO_DOWNLOAD_IMAGES" \
+            -a download_docs="$AOTO_DOWNLOAD_DOCS" \
+            -a download_videos="$AOTO_DOWNLOAD_VIDEOS" \
+            -a preserve_url_structure="$AOTO_PRESERVE_URL_STRUCTURE"
+      - name: Package crawl output
+        run: zip -r aoto-official-cn-full.zip aoto-official-cn-full
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aoto-official-cn-full
+          path: aoto-official-cn-full.zip
+          retention-days: 14
