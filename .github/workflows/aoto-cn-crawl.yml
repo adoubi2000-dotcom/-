@@ -45,7 +45,7 @@ jobs:
       - name: Run crawler
         env:
           AOTO_SEEDS: ${{ github.event.inputs.seed_urls || 'https://www.aoto.com/,https://www.aoto.com/cn/,https://www.aoto.com/zh/,https://cn.aoto.com/,https://www.aoto.com.cn/' }}
-          AOTO_ALLOWED_DOMAINS: 'www.aoto.com,aoto.com,cn.aoto.com,www.aoto.com.cn,aoto.com.cn'
+          AOTO_ALLOWED_DOMAINS: 'www.aoto.com,aoto.com,cn.aoto.com,www.aoto.com.cn,aoto.com.cn,en.aoto.com'
           AOTO_MAX_PAGES: ${{ github.event.inputs.max_pages || '0' }}
           AOTO_DOWNLOAD_IMAGES: ${{ github.event.inputs.download_images || '1' }}
           AOTO_DOWNLOAD_DOCS: ${{ github.event.inputs.download_docs || '1' }}
