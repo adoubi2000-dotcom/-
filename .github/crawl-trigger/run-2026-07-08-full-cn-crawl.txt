@@ -1,3 +1,3 @@
-Trigger full crawl retry after SSL verification bypass and official link domain update.
+Trigger Chinese-only crawl retry after restricting to Chinese website seeds and domains.
 
-run: retry-004
+run: retry-005-cn-only
