@@ -27,6 +27,9 @@ on:
         description: '1 keep files by official website URL tree'
         required: false
         default: '1'
+  push:
+    paths:
+      - '.github/crawl-trigger/**'
 
 jobs:
   crawl:
@@ -41,12 +44,13 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run crawler
         env:
-          AOTO_SEEDS: ${{ inputs.seed_urls }}
-          AOTO_MAX_PAGES: ${{ inputs.max_pages }}
-          AOTO_DOWNLOAD_IMAGES: ${{ inputs.download_images }}
-          AOTO_DOWNLOAD_DOCS: ${{ inputs.download_docs }}
-          AOTO_DOWNLOAD_VIDEOS: ${{ inputs.download_videos }}
-          AOTO_PRESERVE_URL_STRUCTURE: ${{ inputs.preserve_url_structure }}
+          AOTO_SEEDS: ${{ github.event.inputs.seed_urls || 'https://www.aoto.com/,https://www.aoto.com/cn/,https://www.aoto.com/zh/,https://cn.aoto.com/,https://www.aoto.com.cn/' }}
+          AOTO_ALLOWED_DOMAINS: 'www.aoto.com,aoto.com,cn.aoto.com,www.aoto.com.cn,aoto.com.cn'
+          AOTO_MAX_PAGES: ${{ github.event.inputs.max_pages || '0' }}
+          AOTO_DOWNLOAD_IMAGES: ${{ github.event.inputs.download_images || '1' }}
+          AOTO_DOWNLOAD_DOCS: ${{ github.event.inputs.download_docs || '1' }}
+          AOTO_DOWNLOAD_VIDEOS: ${{ github.event.inputs.download_videos || '0' }}
+          AOTO_PRESERVE_URL_STRUCTURE: ${{ github.event.inputs.preserve_url_structure || '1' }}
           AOTO_CRAWL_OUT: aoto-official-cn-full
         run: |
           python -m scrapy crawl aoto_cn_full \
