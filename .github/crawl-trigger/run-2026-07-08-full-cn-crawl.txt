@@ -1,10 +1,3 @@
-Trigger AOTO Chinese official website full crawl.
+Trigger full crawl retry after switching to simple crawler.
 
-Parameters are provided by workflow defaults:
-- seed_urls: https://www.aoto.com/, https://www.aoto.com/cn/, https://www.aoto.com/zh/, https://cn.aoto.com/, https://www.aoto.com.cn/
-- max_pages: 0
-- download_images: 1
-- download_docs: 1
-- download_videos: 0
-- preserve_url_structure: 1
-- allowed_domains: www.aoto.com, aoto.com, cn.aoto.com, www.aoto.com.cn, aoto.com.cn
+run: retry-003
