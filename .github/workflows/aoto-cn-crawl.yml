@@ -52,17 +52,14 @@ jobs:
           AOTO_DOWNLOAD_VIDEOS: ${{ github.event.inputs.download_videos || '0' }}
           AOTO_PRESERVE_URL_STRUCTURE: ${{ github.event.inputs.preserve_url_structure || '1' }}
           AOTO_CRAWL_OUT: aoto-official-cn-full
-        run: |
-          python -m scrapy crawl aoto_cn_full \
-            -a out="$AOTO_CRAWL_OUT" \
-            -a max_pages="$AOTO_MAX_PAGES" \
-            -a download_images="$AOTO_DOWNLOAD_IMAGES" \
-            -a download_docs="$AOTO_DOWNLOAD_DOCS" \
-            -a download_videos="$AOTO_DOWNLOAD_VIDEOS" \
-            -a preserve_url_structure="$AOTO_PRESERVE_URL_STRUCTURE"
+        run: python scripts/aoto_crawl_simple.py
       - name: Package crawl output
-        run: zip -r aoto-official-cn-full.zip aoto-official-cn-full
+        if: always()
+        run: |
+          if [ ! -d aoto-official-cn-full ]; then mkdir -p aoto-official-cn-full/00_reports; echo 'crawler output directory was missing' > aoto-official-cn-full/00_reports/missing-output.txt; fi
+          zip -r aoto-official-cn-full.zip aoto-official-cn-full
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aoto-official-cn-full
